@@ -1,0 +1,656 @@
+/* ============================================================
+   HIỆP SĨ KHÔNG GIAN MẠNG — design tokens
+   ============================================================ */
+:root{
+  --void:        #050806;
+  --void-2:      #0a120c;
+  --void-3:      #0e1a12;
+  --green:       #3dffa0;
+  --green-dim:   #16a35f;
+  --green-glow:  rgba(61,255,160,.55);
+  --red:         #e6394f;
+  --red-dim:     #b91e34;
+  --cyan:        #5eeaf0;
+  --ink:         #eafaf0;
+  --ink-dim:     #9fc7ae;
+  --paper:       #f3f6f2;
+  --paper-2:     #e6ede4;
+  --paper-ink:   #0b1610;
+  --paper-ink-dim:#4d5c53;
+
+  --font-display: 'Orbitron', sans-serif;
+  --font-heading: 'Rajdhani', sans-serif;
+  --font-body:    'Be Vietnam Pro', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  --ease-out: cubic-bezier(.16,1,.3,1);
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{
+  background:var(--void);
+  color:var(--ink);
+  font-family:var(--font-body);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+img{ max-width:100%; display:block; }
+a{ text-decoration:none; color:inherit; }
+h1,h2,h3{ font-family:var(--font-heading); font-weight:700; letter-spacing:.01em; }
+
+::selection{ background:var(--green); color:var(--void); }
+
+/* focus visibility */
+a:focus-visible, button:focus-visible{
+  outline:2px solid var(--cyan);
+  outline-offset:3px;
+  border-radius:4px;
+}
+
+/* ============================================================
+   Global matrix rain background (very subtle, whole page)
+   ============================================================ */
+#matrix-bg{
+  position:fixed; inset:0; width:100%; height:100%;
+  z-index:0; opacity:.16; pointer-events:none;
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav{
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  backdrop-filter:blur(10px);
+  background:linear-gradient(to bottom, rgba(5,8,6,.85), rgba(5,8,6,0));
+  padding:18px 0;
+}
+.nav-inner{
+  max-width:1280px; margin:0 auto; padding:0 32px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.brand{ display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:700; font-size:15px; letter-spacing:.06em; }
+.brand-mark{ color:var(--green); text-shadow:0 0 12px var(--green-glow); font-size:20px; }
+.accent-green{ color:var(--green); }
+.accent-cyan{ color:var(--cyan); }
+.nav-cta{
+  font-family:var(--font-mono); font-size:12.5px; letter-spacing:.04em;
+  border:1px solid rgba(61,255,160,.4); padding:9px 16px; border-radius:100px;
+  display:flex; align-items:center; gap:6px; color:var(--ink);
+  transition:all .25s var(--ease-out);
+}
+.nav-cta:hover{ background:var(--green); color:var(--void); border-color:var(--green); box-shadow:0 0 24px var(--green-glow); }
+.nav-cta .arrow{ transition:transform .25s var(--ease-out); }
+.nav-cta:hover .arrow{ transform:translateX(3px); }
+
+/* ============================================================
+   HERO — ảnh banner gốc chính xác + lớp hiệu ứng 3D phủ trên
+   ============================================================ */
+.hero-exact{
+  position:relative; z-index:1;
+  padding-top:0;
+  background:var(--void);
+}
+.hero-frame{
+  position:relative;
+  width:100%;
+  aspect-ratio: 2752 / 1536;
+  overflow:hidden;
+  perspective:1600px;
+}
+.hero-bg-image{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover; object-position:center;
+  display:block;
+  transform-style:preserve-3d;
+  will-change:transform;
+  transition:transform .1s linear;
+}
+.hero-particles{
+  position:absolute; inset:0; width:100%; height:100%;
+  pointer-events:none; z-index:2;
+}
+.hero-scanline{
+  position:absolute; inset:0; z-index:3; pointer-events:none;
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(61,255,160,.05) 0px,
+    rgba(61,255,160,.05) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode:overlay;
+  opacity:.5;
+}
+.hero-vignette{
+  position:absolute; inset:0; z-index:3; pointer-events:none;
+  box-shadow: inset 0 0 140px 30px rgba(0,0,0,.55);
+}
+
+/* invisible clickable hotspot placed exactly over the button drawn in the image,
+   plus a soft pulsing ring to hint interactivity without altering the artwork */
+.hero-hot-btn{
+  position:absolute; z-index:4;
+  left:5.6%; top:64.5%;
+  width:26%; height:9.5%;
+  border-radius:100px;
+  display:block;
+  cursor:pointer;
+}
+.hot-ring{
+  position:absolute; inset:-6px;
+  border-radius:100px;
+  box-shadow:0 0 0 0 rgba(61,255,160,.55);
+  animation:hotPulse 2.6s ease-out infinite;
+  pointer-events:none;
+}
+@keyframes hotPulse{
+  0%{ box-shadow:0 0 0 0 rgba(61,255,160,.45); }
+  70%{ box-shadow:0 0 0 14px rgba(61,255,160,0); }
+  100%{ box-shadow:0 0 0 0 rgba(61,255,160,0); }
+}
+.hero-hot-btn:hover .hot-ring,
+.hero-hot-btn:focus-visible .hot-ring{
+  box-shadow:0 0 30px 6px rgba(61,255,160,.6);
+}
+.hero-hot-btn:active{ transform:scale(.97); }
+
+/* ---------- HUD corner brackets (khung ngắm kiểu hacker) ---------- */
+.hero-hud-corners{ position:absolute; inset:0; z-index:4; pointer-events:none; }
+.hud-corner{
+  position:absolute; width:46px; height:46px;
+  border-color:var(--green); border-style:solid; border-width:0;
+  opacity:.75; filter:drop-shadow(0 0 6px var(--green-glow));
+  animation:hudBreathe 3.4s ease-in-out infinite;
+}
+.hud-corner.tl{ top:22px; left:22px; border-top-width:2.5px; border-left-width:2.5px; }
+.hud-corner.tr{ top:22px; right:22px; border-top-width:2.5px; border-right-width:2.5px; animation-delay:.4s; }
+.hud-corner.bl{ bottom:22px; left:22px; border-bottom-width:2.5px; border-left-width:2.5px; animation-delay:.8s; }
+@keyframes hudBreathe{
+  0%,100%{ opacity:.45; }
+  50%{ opacity:.9; }
+}
+
+/* ---------- tia quét sáng chạy dọc ảnh ---------- */
+.hero-scan-beam{
+  position:absolute; left:0; right:0; height:70px; top:-70px;
+  z-index:3; pointer-events:none;
+  background:linear-gradient(to bottom,
+    rgba(61,255,160,0) 0%,
+    rgba(61,255,160,.16) 45%,
+    rgba(61,255,160,.55) 50%,
+    rgba(61,255,160,.16) 55%,
+    rgba(61,255,160,0) 100%);
+  mix-blend-mode:screen;
+  animation:scanBeamMove 6s cubic-bezier(.4,0,.2,1) infinite;
+}
+@keyframes scanBeamMove{
+  0%{ top:-70px; opacity:0; }
+  6%{ opacity:1; }
+  50%{ top:100%; opacity:1; }
+  56%{ opacity:0; }
+  100%{ top:100%; opacity:0; }
+}
+
+/* ---------- mạch điện tử phát sáng góc trên ---------- */
+.hero-circuit{
+  position:absolute; width:150px; height:auto; z-index:3; pointer-events:none;
+  opacity:.55;
+}
+.hero-circuit-tl{ top:8px; left:8px; }
+.hero-circuit-tr{ top:8px; right:8px; }
+.circuit-path{
+  stroke:var(--green); stroke-width:1.4;
+  stroke-dasharray:8 6;
+  filter:drop-shadow(0 0 3px var(--green-glow));
+  animation:circuitFlow 5s linear infinite;
+}
+.circuit-node{
+  fill:var(--green);
+  filter:drop-shadow(0 0 4px var(--green-glow));
+  animation:hudBreathe 2.4s ease-in-out infinite;
+}
+@keyframes circuitFlow{
+  to{ stroke-dashoffset:-140; }
+}
+
+/* ---------- ticker trạng thái hệ thống ---------- */
+.hero-status-ticker{
+  position:absolute; top:20px; right:22px; z-index:4; pointer-events:none;
+  display:flex; align-items:center; gap:8px;
+  background:rgba(5,10,7,.55); backdrop-filter:blur(3px);
+  border:1px solid rgba(61,255,160,.28);
+  border-radius:100px; padding:6px 14px 6px 10px;
+  font-family:var(--font-mono); font-size:11px; letter-spacing:.03em;
+  color:var(--green); white-space:nowrap;
+}
+.ticker-dot{
+  width:7px; height:7px; border-radius:50%; background:var(--green);
+  box-shadow:0 0 8px var(--green-glow);
+  animation:tickerBlink 1.3s ease-in-out infinite;
+  flex-shrink:0;
+}
+@keyframes tickerBlink{
+  0%,100%{ opacity:1; } 50%{ opacity:.25; }
+}
+.ticker-cursor{ animation:tickerBlink .9s step-end infinite; margin-left:1px; }
+
+/* ---------- huy hiệu 3D nổi ---------- */
+.hero-badge-3d{
+  position:absolute; top:16%; right:6%; z-index:4; pointer-events:none;
+  width:54px; height:54px; perspective:600px;
+}
+.badge-3d-inner{
+  width:100%; height:100%; position:relative; transform-style:preserve-3d;
+  animation:badgeSpin 6s ease-in-out infinite;
+}
+@keyframes badgeSpin{
+  0%,100%{ transform:rotateY(0deg) rotateX(6deg); }
+  50%{ transform:rotateY(180deg) rotateX(6deg); }
+}
+.badge-face{
+  position:absolute; inset:0; border-radius:14px; backface-visibility:hidden;
+  display:flex; align-items:center; justify-content:center; font-size:24px;
+  background:linear-gradient(150deg, rgba(10,20,14,.9), rgba(5,10,8,.9));
+  border:1px solid rgba(61,255,160,.5);
+  box-shadow:0 0 18px rgba(61,255,160,.35), inset 0 0 12px rgba(61,255,160,.15);
+}
+.badge-face.back{ transform:rotateY(180deg); color:var(--cyan); border-color:rgba(94,234,240,.5); box-shadow:0 0 18px rgba(94,234,240,.35), inset 0 0 12px rgba(94,234,240,.15); }
+
+/* ---------- chip HUD góc dưới phải (che watermark ảnh gốc) ---------- */
+.hero-corner-shield{
+  position:absolute; right:0; bottom:0; z-index:6;
+  min-width:21%; height:12%;
+  display:flex; align-items:center; justify-content:flex-end; gap:8px;
+  padding:0 5% 0 24px;
+  background:linear-gradient(120deg, rgba(5,10,7,0) 0%, rgba(5,10,7,.75) 34%, rgba(4,8,6,.94) 100%);
+  clip-path:polygon(26px 0, 100% 0, 100% 100%, 0 100%, 0 100%);
+  -webkit-clip-path:polygon(26px 0, 100% 0, 100% 100%, 0 100%, 0 100%);
+  border-top:1px solid rgba(61,255,160,.35);
+  pointer-events:none;
+}
+.shield-radar{
+  position:absolute; left:12px; top:50%; width:16px; height:16px;
+  transform:translateY(-50%); border-radius:50%;
+  border:1px solid rgba(61,255,160,.4);
+  overflow:hidden;
+}
+.shield-radar::before{
+  content:''; position:absolute; inset:0;
+  background:conic-gradient(from 0deg, rgba(61,255,160,.9), rgba(61,255,160,0) 70%);
+  animation:radarSpin 2.2s linear infinite;
+}
+@keyframes radarSpin{ to{ transform:rotate(360deg); } }
+.shield-dot{
+  width:6px; height:6px; border-radius:50%; background:var(--green);
+  box-shadow:0 0 8px var(--green-glow); flex-shrink:0;
+  animation:tickerBlink 1.5s ease-in-out infinite;
+}
+.shield-label{
+  font-family:var(--font-mono); font-size:10.5px; letter-spacing:.05em;
+  color:var(--green); text-shadow:0 0 8px var(--green-glow); white-space:nowrap;
+}
+
+@media (max-width:640px){
+  .hero-badge-3d{ width:40px; height:40px; top:14%; right:4%; }
+  .badge-face{ font-size:18px; }
+  .hero-status-ticker{ font-size:9.5px; padding:5px 10px 5px 8px; top:12px; right:12px; }
+  .hero-circuit{ width:100px; }
+  .shield-label{ font-size:8.5px; }
+  .hero-corner-shield{ min-width:52%; height:10%; padding:0 4% 0 18px; }
+  .hero-wire-cube{ width:56px; height:56px; top:2%; }
+}
+
+/* ---------- khối lập phương wireframe 3D trong hero ---------- */
+.hero-wire-cube{
+  position:absolute; top:3%; left:47%; width:86px; height:86px;
+  z-index:4; pointer-events:none;
+  filter:drop-shadow(0 0 10px rgba(61,255,160,.35));
+}
+
+/* ---------- kim cương wireframe 3D cảnh báo — phần Threats ---------- */
+.threat-wire{
+  position:absolute; top:4px; right:4%; width:120px; height:120px;
+  z-index:2; pointer-events:none; opacity:.9;
+}
+@media (max-width:900px){ .threat-wire{ display:none; } }
+
+/* ---------- vòng hào quang wireframe quay quanh khiên — phần Knights ---------- */
+.knight-center{ position:relative; }
+.knight-halo{
+  position:absolute; top:50%; left:50%; width:220px; height:220px;
+  transform:translate(-50%,-50%);
+  z-index:0; pointer-events:none;
+}
+.knight-shield-3d{ position:relative; z-index:1; }
+
+/* ---------- khối phụ trợ wireframe 3D — CTA cuối trang ---------- */
+.cta-wire{
+  position:absolute; top:10%; right:8%; width:110px; height:110px;
+  z-index:1; pointer-events:none; opacity:.85;
+}
+@media (max-width:900px){ .cta-wire{ display:none; } }
+
+.scroll-hint{
+  position:relative; z-index:2;
+  margin:22px auto 0;
+  width:22px; height:36px; border:2px solid rgba(255,255,255,.25); border-radius:14px;
+}
+.scroll-hint span{
+  position:absolute; top:6px; left:50%; transform:translateX(-50%);
+  width:4px; height:8px; border-radius:2px; background:var(--green);
+  animation:scrollDown 1.8s ease-in-out infinite;
+}
+@keyframes scrollDown{
+  0%{ opacity:1; top:6px; } 70%{ opacity:0; top:20px; } 100%{ opacity:0; top:6px; }
+}
+
+/* shared eyebrow / button styles still used lower on the page */
+.eyebrow{
+  font-family:var(--font-mono); font-size:12px; letter-spacing:.14em;
+  color:var(--green); display:inline-flex; align-items:center; gap:8px;
+  margin-bottom:18px; text-transform:uppercase;
+}
+.eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green); animation:dotPulse 1.6s ease-in-out infinite; }
+@keyframes dotPulse{ 0%,100%{ opacity:1; } 50%{ opacity:.3; } }
+
+.btn-primary{
+  position:relative; display:inline-flex; align-items:center; gap:10px;
+  background:var(--green); color:var(--void);
+  font-family:var(--font-heading); font-weight:700; font-size:16px; letter-spacing:.01em;
+  padding:16px 30px; border-radius:100px; overflow:hidden;
+  transform-style:preserve-3d;
+  transition:transform .3s var(--ease-out), box-shadow .3s var(--ease-out);
+}
+.btn-primary:hover{ transform:translateY(-3px) scale(1.02); box-shadow:0 12px 40px rgba(61,255,160,.35); }
+.btn-primary:active{ transform:translateY(0) scale(.98); }
+.btn-rocket{ font-size:18px; }
+.btn-shine{
+  position:absolute; top:0; left:-60%; width:40%; height:100%;
+  background:linear-gradient(115deg, transparent, rgba(255,255,255,.55), transparent);
+  transform:skewX(-20deg);
+  animation:shineSweep 3.2s ease-in-out infinite;
+}
+@keyframes shineSweep{
+  0%{ left:-60%; } 45%{ left:130%; } 100%{ left:130%; }
+}
+.btn-large{ padding:19px 38px; font-size:18px; }
+
+/* ============================================================
+   SECTION GENERIC
+   ============================================================ */
+.section{ position:relative; z-index:1; padding:100px 24px; }
+.section-head{ max-width:680px; margin:0 auto 56px; text-align:center; }
+.section-head h2{
+  font-size:clamp(1.7rem, 3.6vw, 2.6rem); color:var(--ink); line-height:1.2; margin:14px 0 16px;
+}
+.section-head.light h2{ color:var(--paper-ink); }
+.section-desc{ color:var(--ink-dim); font-size:15.5px; line-height:1.7; }
+.section-desc.light{ color:var(--paper-ink-dim); }
+.eyebrow.dark{ color:var(--green-dim); }
+
+/* reveal-on-scroll base */
+.reveal{ opacity:0; transform:translateY(40px) rotateX(6deg); transition:opacity .8s var(--ease-out), transform .8s var(--ease-out); }
+.reveal.in{ opacity:1; transform:translateY(0) rotateX(0deg); }
+
+/* ============================================================
+   THREATS
+   ============================================================ */
+.threats{ background:var(--void); }
+.threat-grid{
+  max-width:1180px; margin:0 auto; perspective:1200px;
+  display:grid; grid-template-columns:repeat(3, 1fr); gap:20px;
+}
+.threat-card{ perspective:900px; }
+.tilt-inner{
+  position:relative; height:100%;
+  background:linear-gradient(160deg, rgba(255,255,255,.05), rgba(255,255,255,.015));
+  border:1px solid rgba(61,255,160,.15); border-radius:16px;
+  padding:28px 24px; transform-style:preserve-3d;
+  transition:transform .12s linear, box-shadow .3s ease, border-color .3s ease;
+  will-change:transform;
+  min-height:180px;
+}
+.tilt-inner:hover{ border-color:rgba(61,255,160,.45); box-shadow:0 20px 50px rgba(0,0,0,.4), 0 0 30px rgba(61,255,160,.08); }
+.threat-icon{ font-size:30px; margin-bottom:14px; transform:translateZ(30px); display:inline-block; }
+.threat-card h3{ font-size:18px; color:var(--ink); margin-bottom:10px; transform:translateZ(24px); }
+.threat-card p{ font-size:14px; line-height:1.65; color:var(--ink-dim); transform:translateZ(18px); }
+
+.threat-card.featured{ grid-row:span 2; grid-column:span 1; }
+.threat-card.featured .tilt-inner{ padding:0; overflow:hidden; display:flex; align-items:flex-end; min-height:100%; }
+.threat-hacker-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top center; transform:translateZ(0); }
+.threat-overlay{
+  position:relative; z-index:2; width:100%; padding:24px;
+  background:linear-gradient(to top, rgba(3,5,4,.95) 20%, transparent 100%);
+}
+.threat-overlay h3{ color:var(--ink); font-size:17px; margin-bottom:8px; }
+.threat-overlay p{ color:var(--ink-dim); font-size:13.5px; line-height:1.6; }
+
+/* ============================================================
+   KNIGHTS (light section)
+   ============================================================ */
+.knights{ background:linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%); color:var(--paper-ink); }
+.knight-grid{
+  max-width:1080px; margin:0 auto; perspective:1400px;
+  display:grid; grid-template-columns:1fr 1.1fr 1fr; gap:20px; align-items:center;
+}
+.knight-card .tilt-inner{
+  background:#fff; border:1px solid rgba(11,22,16,.08); border-radius:20px;
+  padding:14px; box-shadow:0 20px 50px rgba(11,22,16,.08);
+}
+.knight-img{ border-radius:14px; width:100%; height:340px; object-fit:cover; object-position:top; transform:translateZ(20px); }
+.knight-badge{
+  margin-top:12px; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.06em;
+  text-align:center; color:var(--green-dim); background:rgba(22,163,95,.08);
+  padding:8px; border-radius:8px; transform:translateZ(14px);
+}
+.knight-center{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:22px; }
+.knight-shield-3d{
+  width:110px; height:110px; position:relative; transform-style:preserve-3d;
+  animation:shieldSpin 7s ease-in-out infinite;
+}
+@keyframes shieldSpin{
+  0%,100%{ transform:rotateY(0deg); } 50%{ transform:rotateY(180deg); }
+}
+.shield-face{
+  position:absolute; inset:0; border-radius:20px; backface-visibility:hidden;
+  display:flex; align-items:center; justify-content:center; font-size:44px;
+  box-shadow:0 20px 45px rgba(94,234,240,.3);
+}
+.shield-face.front{ background:linear-gradient(145deg, var(--cyan), var(--green)); }
+.shield-face.back{ background:linear-gradient(145deg, var(--red), #7a1424); transform:rotateY(180deg); }
+.knight-quote{ font-family:var(--font-heading); font-size:16px; font-style:italic; color:var(--paper-ink-dim); max-width:220px; }
+
+/* ============================================================
+   FINAL CTA
+   ============================================================ */
+.final-cta{
+  position:relative; background:var(--void-2); text-align:center; overflow:hidden;
+  padding:120px 24px;
+}
+#ctaMatrix{ position:absolute; inset:0; width:100%; height:100%; opacity:.25; }
+.final-cta-inner{ position:relative; z-index:2; max-width:640px; margin:0 auto; }
+.final-cta h2{ color:var(--ink); font-size:clamp(1.9rem, 4vw, 2.8rem); margin:14px 0 18px; line-height:1.15; }
+.final-cta .section-desc{ margin-bottom:36px; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer{
+  position:relative; z-index:1; text-align:center; padding:30px 24px;
+  font-family:var(--font-mono); font-size:11.5px; color:var(--ink-dim);
+  background:var(--void-2); border-top:1px solid rgba(255,255,255,.06);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px){
+  .threat-grid{ grid-template-columns:repeat(2,1fr); }
+  .threat-card.featured{ grid-column:span 2; grid-row:span 1; }
+  .threat-card.featured .tilt-inner{ min-height:260px; }
+  .knight-grid{ grid-template-columns:1fr; }
+  .knight-center{ order:-1; }
+}
+@media (max-width: 640px){
+  .threat-grid{ grid-template-columns:1fr; }
+  .threat-card.featured{ grid-column:span 1; }
+  .nav-cta span:not(.arrow){ display:none; }
+  .nav-cta{ padding:9px 12px; }
+  .hot-ring{ animation:none; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:.001s !important; animation-iteration-count:1 !important; transition-duration:.001s !important; }
+  .reveal{ opacity:1; transform:none; }
+}
+
+/* ============================================================
+   BOOT SEQUENCE INTRO
+   ============================================================ */
+.boot-overlay{
+  position:fixed; inset:0; z-index:500;
+  background:var(--void);
+  display:flex; align-items:center; justify-content:center;
+  transition:opacity .6s var(--ease-out), visibility .6s;
+}
+.boot-overlay::before{
+  content:''; position:absolute; inset:0;
+  background:repeating-linear-gradient(to bottom, rgba(61,255,160,.04) 0px, rgba(61,255,160,.04) 1px, transparent 1px, transparent 3px);
+  pointer-events:none;
+}
+.boot-overlay.hidden{ opacity:0; visibility:hidden; pointer-events:none; }
+.boot-inner{ width:min(90vw, 480px); }
+.boot-lines{
+  font-family:var(--font-mono); font-size:13px; line-height:1.9; color:var(--green);
+  min-height:170px; white-space:pre-wrap;
+}
+.boot-lines .ok{ color:var(--cyan); }
+.boot-cursor{ display:inline-block; width:8px; height:14px; background:var(--green); margin-left:2px; animation:blink 1s step-end infinite; vertical-align:middle; }
+@keyframes blink{ 50%{ opacity:0; } }
+.boot-bar{
+  margin-top:18px; height:3px; width:100%; background:rgba(61,255,160,.12); border-radius:2px; overflow:hidden;
+}
+.boot-bar span{ display:block; height:100%; width:0%; background:linear-gradient(90deg, var(--green), var(--cyan)); box-shadow:0 0 10px var(--green-glow); transition:width .25s linear; }
+.boot-skip{
+  position:absolute; bottom:26px; right:30px;
+  font-family:var(--font-mono); font-size:12px; color:var(--ink-dim);
+  background:none; border:none; cursor:pointer; letter-spacing:.04em;
+  transition:color .2s ease;
+}
+.boot-skip:hover{ color:var(--green); }
+
+/* ============================================================
+   SCROLL PROGRESS BAR
+   ============================================================ */
+.scroll-progress{
+  position:fixed; top:0; left:0; height:3px; width:100%; z-index:150;
+  background:linear-gradient(90deg, var(--green), var(--cyan));
+  box-shadow:0 0 10px var(--green-glow);
+  transform:scaleX(0); transform-origin:left; will-change:transform;
+}
+
+/* ============================================================
+   CUSTOM CURSOR (fine pointer devices only)
+   ============================================================ */
+@media (hover:hover) and (pointer:fine){
+  body{ cursor:none; }
+  a, button, .tilt-card{ cursor:none; }
+  .cursor-dot, .cursor-ring{ display:block; }
+}
+.cursor-dot, .cursor-ring{
+  display:none;
+  position:fixed; top:0; left:0; z-index:400; pointer-events:none;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  will-change:transform;
+}
+.cursor-dot{ width:5px; height:5px; background:var(--green); box-shadow:0 0 8px var(--green); }
+.cursor-ring{
+  width:34px; height:34px; border:1px solid rgba(61,255,160,.5);
+  transition:width .2s ease, height .2s ease, border-color .2s ease, background .2s ease;
+}
+.cursor-ring.hovering{
+  width:56px; height:56px; border-color:var(--cyan); background:rgba(94,234,240,.08);
+}
+
+/* ============================================================
+   MOUSE SPOTLIGHT GLOW (dark sections)
+   ============================================================ */
+.spotlight{ position:relative; }
+.spotlight::before{
+  content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
+  background:radial-gradient(320px circle at var(--mx,50%) var(--my,50%), rgba(61,255,160,.08), transparent 70%);
+  opacity:0; transition:opacity .3s ease;
+}
+.spotlight:hover::before{ opacity:1; }
+.spotlight > *{ position:relative; z-index:1; }
+.spotlight > .threat-wire,
+.spotlight > .cta-wire{ position:absolute !important; z-index:2; }
+
+/* ============================================================
+   SOC SECTION — globe + terminal
+   ============================================================ */
+.soc{ background:var(--void-2); }
+.soc-grid{
+  max-width:1180px; margin:0 auto 56px; perspective:1200px;
+  display:grid; grid-template-columns:1fr 1.15fr; gap:24px; align-items:stretch;
+}
+.globe-frame{
+  position:relative; background:radial-gradient(circle at 50% 40%, rgba(61,255,160,.08), transparent 65%), rgba(10,18,12,.5);
+  border:1px solid rgba(61,255,160,.18); border-radius:20px;
+  min-height:340px; display:flex; align-items:center; justify-content:center; overflow:hidden;
+}
+#globeCanvas{ width:100%; height:100%; min-height:340px; }
+.globe-caption{
+  position:absolute; bottom:14px; left:50%; transform:translateX(-50%) translateZ(20px);
+  font-family:var(--font-mono); font-size:10px; letter-spacing:.1em; color:var(--ink-dim);
+  background:rgba(5,8,6,.6); padding:5px 12px; border-radius:100px; border:1px solid rgba(61,255,160,.2);
+}
+.terminal-inner{
+  background:#03100a; border:1px solid rgba(61,255,160,.22); border-radius:20px;
+  min-height:340px; display:flex; flex-direction:column; overflow:hidden; padding:0;
+}
+.terminal-topbar{
+  display:flex; align-items:center; gap:7px; padding:12px 16px;
+  border-bottom:1px solid rgba(61,255,160,.12); background:rgba(61,255,160,.03);
+  transform:translateZ(16px);
+}
+.term-dot{ width:9px; height:9px; border-radius:50%; }
+.term-dot.red{ background:var(--red); }
+.term-dot.yellow{ background:#e6c239; }
+.term-dot.green{ background:var(--green); }
+.term-title{ font-family:var(--font-mono); font-size:11px; color:var(--ink-dim); margin-left:8px; }
+.terminal-body{
+  flex:1; padding:16px 18px; font-family:var(--font-mono); font-size:12.5px; line-height:1.85;
+  color:var(--green); overflow:hidden; transform:translateZ(10px);
+}
+.terminal-body .line{ opacity:0; animation:lineIn .3s forwards; white-space:pre-wrap; }
+.terminal-body .line.warn{ color:#e6c239; }
+.terminal-body .line.info{ color:var(--cyan); }
+.terminal-body .line.ok{ color:var(--green); }
+@keyframes lineIn{ from{ opacity:0; transform:translateY(4px); } to{ opacity:1; transform:translateY(0); } }
+.term-caret{ display:inline-block; width:7px; height:13px; background:var(--green); animation:blink 1s step-end infinite; vertical-align:middle; }
+
+.stat-strip{
+  max-width:1180px; margin:0 auto; perspective:1000px;
+  display:grid; grid-template-columns:repeat(4, 1fr); gap:18px;
+}
+.stat-item{
+  text-align:center; padding:26px 12px; border-radius:16px;
+  background:rgba(255,255,255,.02); border:1px solid rgba(61,255,160,.1);
+}
+.stat-num{
+  font-family:var(--font-display); font-weight:800; font-size:clamp(1.8rem, 3.4vw, 2.6rem);
+  color:var(--ink); text-shadow:0 0 18px rgba(61,255,160,.25);
+}
+.stat-label{ margin-top:8px; font-size:12.5px; color:var(--ink-dim); font-family:var(--font-mono); letter-spacing:.02em; }
+
+@media (max-width: 900px){
+  .soc-grid{ grid-template-columns:1fr; }
+  .stat-strip{ grid-template-columns:repeat(2, 1fr); }
+}
+@media (max-width: 640px){
+  .boot-lines{ font-size:11.5px; }
+}
